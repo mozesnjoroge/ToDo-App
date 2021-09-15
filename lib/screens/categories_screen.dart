@@ -1,14 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:todo_list_sqflite/model/category.dart';
 import 'package:todo_list_sqflite/screens/home_screen.dart';
+import 'package:todo_list_sqflite/services/category_services.dart';
 
 class CategoriesScreen extends StatefulWidget {
   @override
   _CategoriesScreenState createState() => _CategoriesScreenState();
 }
 
+//controllers
 var _categoryNameController = TextEditingController();
 var _categoryDescriptionController = TextEditingController();
+
+//services
+var _category = Category();
+var _categoryService = CategoryServices();
 
 _showFormDialog(BuildContext context) {
   return showDialog(
@@ -44,10 +51,9 @@ _showFormDialog(BuildContext context) {
             ),
           ),
           onPressed: () {
-            print('Category: ${_categoryNameController.text}');
-            print('Description: ${_categoryDescriptionController.text}');
-            _categoryNameController.clear();
-            _categoryDescriptionController.clear();
+            _category.name = _categoryNameController.text;
+            _category.description = _categoryDescriptionController.text;
+            _categoryService.saveCategory(_category);
             Navigator.of(context).pop();
           },
         ),
