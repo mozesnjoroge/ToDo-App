@@ -1,5 +1,4 @@
 import 'package:sqflite/sqflite.dart';
-import 'package:todo_list_sqflite/model/category.dart';
 import 'package:todo_list_sqflite/repositories/database_connection.dart';
 
 class Repository {
@@ -28,5 +27,11 @@ class Repository {
   readData(table) async {
     var readConnection = await database;
     return await readConnection.query(table);
+  }
+
+  //updating data
+  readDataById(table, itemId) async { 
+    var readIdConnection = await database;
+    return await readIdConnection.query(table, where: 'id=?', whereArgs: [itemId]);
   }
 }
