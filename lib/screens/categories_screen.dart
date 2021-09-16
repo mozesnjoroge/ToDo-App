@@ -50,10 +50,11 @@ _showFormDialog(BuildContext context) {
               color: Colors.green[900],
             ),
           ),
-          onPressed: () {
+          onPressed: () async {
             _category.name = _categoryNameController.text;
             _category.description = _categoryDescriptionController.text;
-            _categoryService.saveCategory(_category);
+            var result = await _categoryService.saveCategory(_category);
+            print(result);
             Navigator.of(context).pop();
           },
         ),
