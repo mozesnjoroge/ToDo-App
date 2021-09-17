@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:todo_list_sqflite/model/category.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:todo_list_sqflite/model/todo.dart';
 import 'package:todo_list_sqflite/services/category_services.dart';
+import 'package:todo_list_sqflite/services/todo_service.dart';
 
 class TodoScreen extends StatefulWidget {
   @override
@@ -8,11 +10,41 @@ class TodoScreen extends StatefulWidget {
 }
 
 class _TodoScreenState extends State<TodoScreen> {
+  //global variables
   List<DropdownMenuItem<String>> _categories = <DropdownMenuItem<String>>[];
   var _selectedValue;
   var _todoDateController = TextEditingController();
   var _todoTitleController = TextEditingController();
   var _todoDescriptionController = TextEditingController();
+
+  void _showSaveTodoToast() {
+    FToast fToast = FToast();
+    Widget toast = Container(
+      padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15.0), color: Colors.blueAccent),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Icon(
+            Icons.check,
+            color: Colors.white,
+          ),
+          SizedBox(width: 5.0),
+          Text(
+            'Task updated',
+            style: TextStyle(color: Colors.white),
+          ),
+        ],
+      ),
+    );
+    fToast.showToast(
+      child: toast,
+      gravity: ToastGravity.BOTTOM,
+      toastDuration: Duration(seconds: 3),
+    );
+  }
 
   _loadCategories() async {
     //instantiate category service
@@ -35,6 +67,8 @@ class _TodoScreenState extends State<TodoScreen> {
     super.initState();
     _loadCategories();
   }
+
+  void _selectTodoDate(BuildContext context) {}
 
   @override
   Widget build(BuildContext context) {
@@ -70,13 +104,16 @@ class _TodoScreenState extends State<TodoScreen> {
                   labelText: 'Date',
                   hintText: 'Pick a due date',
                   prefixIcon: InkWell(
+                    onTap: () {
+                      _selectTodoDate(context);
+                    },
                     child: Icon(Icons.calendar_today),
                   ),
                 ),
               ),
               DropdownButtonFormField(
                 value: _selectedValue,
-                hint: Text('Pick a category'),
+                hint: Text('Category'),
                 items: _categories,
                 onChanged: (value) {
                   _selectedValue = value;
@@ -84,7 +121,6 @@ class _TodoScreenState extends State<TodoScreen> {
               ),
               SizedBox(height: 10),
               TextButton(
-                onPressed: () {},
                 child: Text(
                   'Save',
                   style: TextStyle(color: Colors.white),
@@ -92,6 +128,18 @@ class _TodoScreenState extends State<TodoScreen> {
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all(Colors.blueAccent),
                 ),
+                onPressed: () async {
+                  var newTodo = Todo();
+                  newTodo.title = _todoTitleController.text;
+                  newTodo.description = _todoDescriptionController.text;
+                  newTodo.category = _selectedValue.toString();
+                  newTodo.todoDate = _todoDateController.text;
+
+                  var todoService = TodoService();
+                  var result = await todoService.saveTodo(newTodo);
+                  print(result);
+                  result > 0 ?? _showSaveTodoToast();
+                },
               ),
             ],
           ),
