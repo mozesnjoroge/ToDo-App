@@ -1,7 +1,6 @@
 // ignore: avoid_web_libraries_in_flutter
 
 import 'package:flutter/material.dart';
-import 'package:todo_list_sqflite/model/category.dart';
 import 'package:todo_list_sqflite/screens/categories_screen.dart';
 import 'package:todo_list_sqflite/screens/home_screen.dart';
 import 'package:todo_list_sqflite/services/category_services.dart';
@@ -21,7 +20,7 @@ class _DrawerNavigationState extends State<DrawerNavigation> {
     categories.forEach((category) {
       setState(() {
         _categoryList.add(ListTile(
-          title: category['title'],
+          title: Text(category['name']),
         ));
       });
     });
@@ -63,9 +62,13 @@ class _DrawerNavigationState extends State<DrawerNavigation> {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => CategoriesScreen()));
               },
-              
             ),
-            Divider(),
+            Divider(
+              thickness: 3.0,
+              color: Colors.lightBlueAccent,
+              indent: 10.0,
+              endIndent: 10.0,
+            ),
             Column(
               children: _categoryList,
             )
