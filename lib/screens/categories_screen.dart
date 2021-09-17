@@ -106,7 +106,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   }
 
   //toast message
-  void _showToast() {
+  void _showUpdateToast() {
     Widget toast = Container(
       padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
       decoration: BoxDecoration(
@@ -120,7 +120,38 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
             color: Colors.white,
           ),
           SizedBox(width: 5.0),
-          Text('Task updated',style: TextStyle(color: Colors.white),),
+          Text(
+            'Task updated',
+            style: TextStyle(color: Colors.white),
+          ),
+        ],
+      ),
+    );
+    fToast.showToast(
+      child: toast,
+      gravity: ToastGravity.BOTTOM,
+      toastDuration: Duration(seconds: 3),
+    );
+  }
+
+  void _showDeleteToast() {
+    Widget toast = Container(
+      padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15.0), color: Colors.blueAccent),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Icon(
+            Icons.check,
+            color: Colors.white,
+          ),
+          SizedBox(width: 5.0),
+          Text(
+            'Task deleted successfully',
+            style: TextStyle(color: Colors.white),
+          ),
         ],
       ),
     );
@@ -182,7 +213,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
               print(result);
               Navigator.of(context).pop();
               fToast.init(context);
-              _showToast();
+              _showUpdateToast();
               getAllCategories();
             },
           ),
@@ -194,6 +225,50 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
               'Cancel',
               style: TextStyle(
                 color: Colors.black,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  _deleteFormDialog(BuildContext context, categoryId) {
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Are you sure you want to delete this task?'),
+        actions: [
+          OutlinedButton(
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(Colors.red),
+            ),
+            child: Text(
+              'Delete',
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+            onPressed: () async {
+              var result = await _categoryService.deleteCategory(categoryId);
+              print(result);
+              Navigator.of(context).pop();
+              fToast.init(context);
+              _showDeleteToast();
+              getAllCategories();
+            },
+          ),
+          OutlinedButton(
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(Colors.green),
+            ),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text(
+              'Cancel',
+              style: TextStyle(
+                color: Colors.white,
               ),
             ),
           ),
@@ -245,12 +320,17 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                       IconButton(
                         icon: Icon(Icons.delete),
                         color: Colors.red,
-                        onPressed: () {},
+                        onPressed: () {
+                          _deleteFormDialog(context, _categoryList![index].id);
+                        },
                       ),
                     ],
                   ),
-                  subtitle: Text(
-                    '${_categoryList![index].description}',
+                  subtitle: Padding(
+                    padding: EdgeInsets.only(bottom: 5.0),
+                    child: Text(
+                      '${_categoryList![index].description}',
+                    ),
                   ),
                 ),
               ),

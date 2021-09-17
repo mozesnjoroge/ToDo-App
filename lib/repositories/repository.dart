@@ -38,6 +38,13 @@ class Repository {
 
   updateData(table, data) async {
     var updateConnection = await database;
-    return await updateConnection.update(table, data, where: 'id=?', whereArgs: [data['id']]);
+    return await updateConnection
+        .update(table, data, where: 'id=?', whereArgs: [data['id']]);
+  }
+
+  deleteData(table, itemId) async {
+    var deleteConnection = await database;
+    return await deleteConnection
+        .rawDelete('DELETE FROM $table WHERE id=$itemId');
   }
 }
