@@ -30,8 +30,14 @@ class Repository {
   }
 
   //updating data
-  readDataById(table, itemId) async { 
+  readDataById(table, itemId) async {
     var readIdConnection = await database;
-    return await readIdConnection.query(table, where: 'id=?', whereArgs: [itemId]);
+    return await readIdConnection
+        .query(table, where: 'id=?', whereArgs: [itemId]);
+  }
+
+  updateData(table, data) async {
+    var updateConnection = await database;
+    return await updateConnection.update(table, data, where: 'id=?', whereArgs: [data['id']]);
   }
 }

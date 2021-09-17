@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:todo_list_sqflite/model/category.dart';
 import 'package:todo_list_sqflite/screens/home_screen.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:todo_list_sqflite/services/category_services.dart';
 
 class CategoriesScreen extends StatefulWidget {
@@ -18,7 +19,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
 
 //global variable
   var category;
-
+  Fluttertoast flutterToast = Fluttertoast();
+  FToast fToast = FToast();
 //controllers
   var _categoryNameController = TextEditingController();
   var _categoryDescriptionController = TextEditingController();
@@ -103,6 +105,32 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
     );
   }
 
+  //toast message
+  void _showToast() {
+    Widget toast = Container(
+      padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15.0), color: Colors.blueAccent),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Icon(
+            Icons.check,
+            color: Colors.white,
+          ),
+          SizedBox(width: 5.0),
+          Text('Task updated',style: TextStyle(color: Colors.white),),
+        ],
+      ),
+    );
+    fToast.showToast(
+      child: toast,
+      gravity: ToastGravity.BOTTOM,
+      toastDuration: Duration(seconds: 3),
+    );
+  }
+
   _editCategory(BuildContext context, categoryId) async {
     category = await _categoryService.readCategoryById(categoryId);
     setState(() {
@@ -147,11 +175,15 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
               ),
             ),
             onPressed: () async {
+              _category.id = category[0]['id'];
               _category.name = _editCategoryNameController.text;
               _category.description = _editCategoryDescriptionController.text;
-              var result = await _categoryService.insertCategory(_category);
+              var result = await _categoryService.updateCategory(_category);
               print(result);
               Navigator.of(context).pop();
+              fToast.init(context);
+              _showToast();
+              getAllCategories();
             },
           ),
           OutlinedButton(
@@ -201,7 +233,6 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                       Icons.edit,
                     ),
                     onPressed: () {
-                     
                       _editCategory(context, _categoryList![index].id);
                     },
                   ),
