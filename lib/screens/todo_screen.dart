@@ -33,7 +33,7 @@ class _TodoScreenState extends State<TodoScreen> {
           ),
           SizedBox(width: 5.0),
           Text(
-            'Task updated',
+            'Created successfully',
             style: TextStyle(color: Colors.white),
           ),
         ],
@@ -134,6 +134,7 @@ class _TodoScreenState extends State<TodoScreen> {
                   newTodo.description = _todoDescriptionController.text;
                   newTodo.category = _selectedValue.toString();
                   newTodo.todoDate = _todoDateController.text;
+                  newTodo.isFinished = 0;
 
                   var todoService = TodoService();
                   var result = await todoService.saveTodo(newTodo);
