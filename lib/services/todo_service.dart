@@ -10,4 +10,8 @@ class TodoService {
   saveTodo(Todo todo) async {
     return await _repository!.insertData('Todos', todo.todoMap());
   }
+
+  readTodo() async {
+    return await _repository!.readData('Todos');
+  }
 }
