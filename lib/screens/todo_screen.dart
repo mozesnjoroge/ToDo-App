@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
 import 'package:todo_list_sqflite/model/todo.dart';
 import 'package:todo_list_sqflite/services/category_services.dart';
 import 'package:todo_list_sqflite/services/todo_service.dart';
@@ -11,11 +12,30 @@ class TodoScreen extends StatefulWidget {
 
 class _TodoScreenState extends State<TodoScreen> {
   //global variables
+
+  DateTime _todoDate = DateTime.now();
+
   List<DropdownMenuItem<String>> _categories = <DropdownMenuItem<String>>[];
   var _selectedValue;
   var _todoDateController = TextEditingController();
   var _todoTitleController = TextEditingController();
   var _todoDescriptionController = TextEditingController();
+
+  void _selectTodoDate(BuildContext context) async {
+    var _pickedDate = await showDatePicker(
+        context: context,
+        initialDate: _todoDate,
+        firstDate: DateTime(2021),
+        lastDate: DateTime(2100));
+
+    //null check
+    if (_pickedDate != null) {
+      setState(() {
+        _todoDate = _pickedDate;
+        _todoDateController.text = DateFormat('yMMMEd').format(_todoDate);
+      });
+    }
+  }
 
   void _showSaveTodoToast() {
     FToast fToast = FToast();
@@ -67,8 +87,6 @@ class _TodoScreenState extends State<TodoScreen> {
     super.initState();
     _loadCategories();
   }
-
-  void _selectTodoDate(BuildContext context) {}
 
   @override
   Widget build(BuildContext context) {
@@ -139,7 +157,9 @@ class _TodoScreenState extends State<TodoScreen> {
                   var todoService = TodoService();
                   var result = await todoService.saveTodo(newTodo);
                   print(result);
-                  result > 0 ?? _showSaveTodoToast();
+                  if (result > 0) {
+                    _showSaveTodoToast();
+                  }
                 },
               ),
             ],
