@@ -1,16 +1,11 @@
 # todo_list_sqflite
 
-A new Flutter project.
+## Flutter sqflite personal project
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+This project is a starting point for a Flutter application that manages your todo tasks with sqflite database.
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- A user can record their todo tasks, dueDate and description.
+- The tasks can be filtered in terms of their category, update and deleted once thet are done.
+- This projects helps me understand core concepts of flutter sqflite database principles.
